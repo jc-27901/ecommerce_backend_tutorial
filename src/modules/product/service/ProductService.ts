@@ -10,6 +10,7 @@ export class ProductService {
     stock: number,
     price: number,
     categoryIds: string[],
+    imageUrls: string[],
   ) {
 
     for(const id of categoryIds) {
@@ -25,6 +26,7 @@ export class ProductService {
         stock,
         price,
         categoryIds,
+        images: imageUrls,
     });
   }
 

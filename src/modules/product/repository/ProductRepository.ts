@@ -9,12 +9,14 @@ export class ProductRepository {
     stock: number;
     price: number;
     categoryIds: string[];
+    images: string[];
   }) {
     return prisma.product.create({ data: {
         title: data.title,
         description: data.description,
         stock: data.stock,
         price: data.price,
+        images: data.images,
         categories: {
             connect: data.categoryIds.map(id => ({ id }))
         },
