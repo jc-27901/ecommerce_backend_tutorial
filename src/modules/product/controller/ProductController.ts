@@ -8,6 +8,18 @@ export class ProductController {
     async createProduct(req: Request, res: Response) {
   try { 
     const { title, description, stock, price, categoryIds } = req.body;
+
+     let parsedCategories: string[];
+
+    try {
+      parsedCategories = typeof categoryIds === "string"
+        ? JSON.parse(categoryIds)
+        : categoryIds;
+    } catch (error) {
+      console.log("ERROR IN PRODUCT CREATE:", error);
+      return res.status(400).json({ error: "Invalid categoryIds format" });
+    }
+
     const imageUrls = (req.files as Express.Multer.File[]).map(
       (file) => file.path
     );
@@ -17,11 +29,12 @@ export class ProductController {
       description,
       Number(stock),
       Number(price),
-      JSON.parse(categoryIds),
+      parsedCategories,
       imageUrls,
     );
     return res.status(201).json(product);
   } catch (error : any) {
+    console.log("ERROR IN PRODUCT CREATE:", error);
     return res.status(400).json({ error: error.message });
   }
 }
