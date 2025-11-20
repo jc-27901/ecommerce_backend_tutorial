@@ -13,19 +13,36 @@ export class CartService {
       cart = await this.cartRepo.getCartByUser(userId);
     }
 
-    return cart;
+    const cartItems = cart!.items;
+    // calculate total items
+    const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+    // calculate subtotal
+    const subtotal = cartItems.reduce((acc, item) => acc + item.quantity * item.product.price, 0);
+    // calculate 18% gst tax(optional)
+    const gstTax = subtotal * 0.18;
+    const total = subtotal + gstTax;
+
+    return {
+      ...cart!,
+      totalItems,
+      subtotal,
+      gstTax,
+      total,
+    };
   }
 
   async addToCart(userId: string, productId: string, quantity: number) {
     const product = await this.productRepo.findById(productId);
-    if (!product) {
-      throw new Error("Product not found");
-    }
+    if (!product) throw new Error("Product not found");
+
+    // ensure cart exists
     let cart = await this.cartRepo.getCartByUser(userId);
-    if(!cart) {
-      throw new Error("Cart not found");
+    if (!cart) {
+      await this.cartRepo.createCart(userId);
+      cart = await this.cartRepo.getCartByUser(userId);
     }
-   return await this.cartRepo.addItem(cart.id, productId, quantity);
+
+    return this.cartRepo.addItem(cart!.id, productId, quantity);
   }
 
   async updateQuantity(userId: string, cartItemId: string, quantity: number) {
