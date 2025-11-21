@@ -50,4 +50,10 @@ export class CartRepository {
     });
   }
 
+  clearCart(cartId: string) {
+  return prisma.cartItem.deleteMany({
+    where: { cartId }
+  });
+}
+
 }
