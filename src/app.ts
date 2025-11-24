@@ -6,6 +6,7 @@ import productRoutes from "./modules/product/routes/ProductRoutes";
 import { errorLogger } from "./core/middleware/errorLogger";
 import cartRouter from "./modules/cart/routes/CartRoute";
 import orderRouter from "./modules/order/route/OrderRoute";
+import docsRouter from "./core/utils/swagger";
 
 const app = express();
 app.use(express.json());
@@ -22,5 +23,8 @@ app.use('/categories', categoryRoutes);
 app.use('/products', productRoutes);
 app.use('/cart', cartRouter);
 app.use('/orders', orderRouter);
+
+
+app.use('/docs', docsRouter);
 
 export default app;
